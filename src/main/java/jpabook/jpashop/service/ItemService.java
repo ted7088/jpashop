@@ -17,7 +17,7 @@ public class ItemService {
         itemRepository.save(item);
     }
     public List<Item> findItems() {
-        return itemRepository.findAll();
+        return itemRepository.findAll();//아이템 찾기
     }
 
     public Item findOne(Long itemId) {
