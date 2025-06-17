@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jpabook.jpashop.repository.ItemMapper">
+    
+    <resultMap id="ItemResultMap" type="jpabook.jpashop.domain.item.Item">
+        <id property="id" column="item_id"/>
+        <result property="name" column="name"/>
+        <result property="price" column="price"/>
+        <result property="stockQuantity" column="stock_quantity"/>
+        <result property="dtype" column="dtype"/>
+        <discriminator javaType="string" column="dtype">
+            <case value="Album" resultType="jpabook.jpashop.domain.item.Album">
+                <result property="artist" column="artist"/>
+                <result property="etc" column="etc"/>
+            </case>
+            <case value="Book" resultType="jpabook.jpashop.domain.item.Book">
+                <result property="author" column="author"/>
+                <result property="isbn" column="isbn"/>
+            </case>
+            <case value="Movie" resultType="jpabook.jpashop.domain.item.Movie">
+                <result property="director" column="director"/>
+                <result property="actor" column="actor"/>
+            </case>
+        </discriminator>
+    </resultMap>
+
+    <insert id="save" parameterType="jpabook.jpashop.domain.item.Item" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO item (
+            dtype, name, price, stock_quantity
+            <if test="dtype == 'Album'">
+                , artist, etc
+            </if>
+            <if test="dtype == 'Book'">
+                , author, isbn
+            </if>
+            <if test="dtype == 'Movie'">
+                , director, actor
+            </if>
+        )
+        VALUES (
+            #{dtype}, #{name}, #{price}, #{stockQuantity}
+            <if test="dtype == 'Album'">
+                , #{artist}, #{etc}
+            </if>
+            <if test="dtype == 'Book'">
+                , #{author}, #{isbn}
+            </if>
+            <if test="dtype == 'Movie'">
+                , #{director}, #{actor}
+            </if>
+        )
+        <selectKey keyProperty="id" resultType="Long" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+
+    <select id="findById" parameterType="Long" resultMap="ItemResultMap">
+        SELECT *
+        FROM item
+        WHERE item_id = #{id}
+    </select>
+
+    <select id="findAll" resultMap="ItemResultMap">
+        SELECT *
+        FROM item
+    </select>
+
+    <select id="findByName" parameterType="String" resultMap="ItemResultMap">
+        SELECT *
+        FROM item
+        WHERE name LIKE CONCAT('%', #{name}, '%')
+    </select>
+
+    <update id="update" parameterType="jpabook.jpashop.domain.item.Item">
+        UPDATE item
+        SET 
+            name = #{name},
+            price = #{price},
+            stock_quantity = #{stockQuantity}
+            <if test="dtype == 'Album'">
+                , artist = #{artist}
+                , etc = #{etc}
+            </if>
+            <if test="dtype == 'Book'">
+                , author = #{author}
+                , isbn = #{isbn}
+            </if>
+            <if test="dtype == 'Movie'">
+                , director = #{director}
+                , actor = #{actor}
+            </if>
+        WHERE item_id = #{id}
+    </update>
+
+    <update id="updateStockQuantity">
+        UPDATE item
+        SET stock_quantity = #{param2}
+        WHERE item_id = #{param1}
+    </update>
+
+    <update id="decreaseStock">
+        UPDATE item
+        SET stock_quantity = stock_quantity - #{param2}
+        WHERE item_id = #{param1}
+        AND stock_quantity >= #{param2}
+    </update>
+
+    <select id="getStockQuantity" parameterType="Long" resultType="int">
+        SELECT stock_quantity
+        FROM item
+        WHERE item_id = #{id}
+    </select>
+
+    <delete id="delete" parameterType="Long">
+        DELETE FROM item
+        WHERE item_id = #{id}
+    </delete>
+</mapper> 

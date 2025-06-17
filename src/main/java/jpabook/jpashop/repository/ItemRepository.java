@@ -1,6 +1,5 @@
 package jpabook.jpashop.repository;
 
-import jakarta.persistence.EntityManager;
 import jpabook.jpashop.domain.item.Item;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -11,22 +10,27 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ItemRepository {
 
-    private final EntityManager em;
+    private final ItemMapper itemMapper;
 
-    public void save(Item item){
-        if(item.getId()==null){
-            em.persist(item);
-        }else{
-            em.merge(item);
+    public void save(Item item) {
+        if (item.getId() == null) {
+            itemMapper.save(item);
+        } else {
+            itemMapper.update(item);
         }
     }
 
-    public Item findOne(Long id){
-        return em.find(Item.class , id);
+    public Item findOne(Long id) {
+        return itemMapper.findById(id);
     }
 
-    public List<Item> findAll(){
-        return em.createQuery("select i from Item  i", Item.class)
-                .getResultList();
+    public List<Item> findAll() {
+        return itemMapper.findAll();
+    }
+    
+    public void updateStock(Long itemId, int stockQuantity) {
+        Item item = findOne(itemId);
+        item.setStockQuantity(stockQuantity);
+        itemMapper.update(item);
     }
 }

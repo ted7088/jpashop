@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jpabook.jpashop.repository.OrderMapper">
+    
+    <resultMap id="OrderResultMap" type="jpabook.jpashop.domain.Order">
+        <id property="id" column="order_id"/>
+        <result property="orderDate" column="order_date"/>
+        <result property="status" column="status"/>
+        <association property="member" javaType="jpabook.jpashop.domain.Member">
+            <id property="id" column="member_id"/>
+            <result property="name" column="member_name"/>
+        </association>
+        <association property="delivery" javaType="jpabook.jpashop.domain.Delivery">
+            <id property="id" column="delivery_id"/>
+            <result property="status" column="delivery_status"/>
+        </association>
+        <collection property="orderItems" ofType="jpabook.jpashop.domain.OrderItem">
+            <id property="id" column="order_item_id"/>
+            <result property="orderPrice" column="order_price"/>
+            <result property="count" column="count"/>
+            <association property="item">
+                <discriminator javaType="string" column="dtype">
+                    <case value="Album" resultType="jpabook.jpashop.domain.item.Album">
+                        <id property="id" column="item_id"/>
+                        <result property="name" column="item_name"/>
+                        <result property="price" column="price"/>
+                        <result property="stockQuantity" column="stock_quantity"/>
+                        <result property="dtype" column="dtype"/>
+                        <result property="artist" column="artist"/>
+                        <result property="etc" column="etc"/>
+                    </case>
+                    <case value="Book" resultType="jpabook.jpashop.domain.item.Book">
+                        <id property="id" column="item_id"/>
+                        <result property="name" column="item_name"/>
+                        <result property="price" column="price"/>
+                        <result property="stockQuantity" column="stock_quantity"/>
+                        <result property="dtype" column="dtype"/>
+                        <result property="author" column="author"/>
+                        <result property="isbn" column="isbn"/>
+                    </case>
+                    <case value="Movie" resultType="jpabook.jpashop.domain.item.Movie">
+                        <id property="id" column="item_id"/>
+                        <result property="name" column="item_name"/>
+                        <result property="price" column="price"/>
+                        <result property="stockQuantity" column="stock_quantity"/>
+                        <result property="dtype" column="dtype"/>
+                        <result property="director" column="director"/>
+                        <result property="actor" column="actor"/>
+                    </case>
+                </discriminator>
+            </association>
+        </collection>
+    </resultMap>
+
+    <insert id="save" parameterType="jpabook.jpashop.domain.Order" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO orders (member_id, delivery_id, order_date, status)
+        VALUES (#{member.id}, #{delivery.id}, #{orderDate}, #{status})
+        <selectKey keyProperty="id" resultType="Long" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+
+    <insert id="saveOrderItem">
+        INSERT INTO order_item (order_id, item_id, order_price, count)
+        VALUES (#{orderId}, #{itemId}, #{orderPrice}, #{count})
+    </insert>
+
+    <select id="findById" parameterType="Long" resultMap="OrderResultMap">
+        SELECT o.*, m.name as member_name,
+               d.status as delivery_status,
+               oi.order_item_id, oi.order_price, oi.count,
+               i.item_id, i.name as item_name, i.price, i.stock_quantity,
+               i.dtype, i.artist, i.etc, i.author, i.isbn, i.director, i.actor
+        FROM orders o
+        LEFT JOIN member m ON o.member_id = m.member_id
+        LEFT JOIN delivery d ON o.delivery_id = d.delivery_id
+        LEFT JOIN order_item oi ON o.order_id = oi.order_id
+        LEFT JOIN item i ON oi.item_id = i.item_id
+        WHERE o.order_id = #{id}
+    </select>
+
+    <select id="findAll" resultMap="OrderResultMap">
+        SELECT o.*, m.name as member_name,
+               d.status as delivery_status,
+               oi.order_item_id, oi.order_price, oi.count,
+               i.item_id, i.name as item_name, i.price, i.stock_quantity,
+               i.dtype, i.artist, i.etc, i.author, i.isbn, i.director, i.actor
+        FROM orders o
+        LEFT JOIN member m ON o.member_id = m.member_id
+        LEFT JOIN delivery d ON o.delivery_id = d.delivery_id
+        LEFT JOIN order_item oi ON o.order_id = oi.order_id
+        LEFT JOIN item i ON oi.item_id = i.item_id
+    </select>
+
+    <select id="findByMemberId" parameterType="Long" resultMap="OrderResultMap">
+        SELECT o.*, m.name as member_name,
+               d.status as delivery_status,
+               oi.order_item_id, oi.order_price, oi.count,
+               i.item_id, i.name as item_name, i.price, i.stock_quantity,
+               i.dtype, i.artist, i.etc, i.author, i.isbn, i.director, i.actor
+        FROM orders o
+        LEFT JOIN member m ON o.member_id = m.member_id
+        LEFT JOIN delivery d ON o.delivery_id = d.delivery_id
+        LEFT JOIN order_item oi ON o.order_id = oi.order_id
+        LEFT JOIN item i ON oi.item_id = i.item_id
+        WHERE o.member_id = #{memberId}
+    </select>
+
+    <update id="updateStatus">
+        UPDATE orders
+        SET status = #{status}
+        WHERE order_id = #{orderId}
+    </update>
+
+    <select id="findBySearchCriteria" parameterType="jpabook.jpashop.repository.OrderSearch" resultMap="OrderResultMap">
+        SELECT o.*, m.name as member_name,
+               d.status as delivery_status,
+               oi.order_item_id, oi.order_price, oi.count,
+               i.item_id, i.name as item_name, i.price, i.stock_quantity,
+               i.dtype, i.artist, i.etc, i.author, i.isbn, i.director, i.actor
+        FROM orders o
+        LEFT JOIN member m ON o.member_id = m.member_id
+        LEFT JOIN delivery d ON o.delivery_id = d.delivery_id
+        LEFT JOIN order_item oi ON o.order_id = oi.order_id
+        LEFT JOIN item i ON oi.item_id = i.item_id
+        <where>
+            <if test="orderStatus != null">
+                AND o.status = #{orderStatus, typeHandler=jpabook.jpashop.config.OrderStatusTypeHandler}
+            </if>
+            <if test="memberName != null and memberName != ''">
+                AND m.name LIKE CONCAT('%', #{memberName}, '%')
+            </if>
+        </where>
+        LIMIT 1000
+    </select>
+</mapper> 

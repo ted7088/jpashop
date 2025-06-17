@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jpabook.jpashop.repository.CategoryMapper">
+    
+    <resultMap id="CategoryResultMap" type="jpabook.jpashop.domain.Category">
+        <id property="id" column="category_id"/>
+        <result property="name" column="name"/>
+        <association property="parent" javaType="jpabook.jpashop.domain.Category">
+            <id property="id" column="parent_id"/>
+            <result property="name" column="parent_name"/>
+        </association>
+        <collection property="items" ofType="jpabook.jpashop.domain.item.Item">
+            <id property="id" column="item_id"/>
+            <result property="name" column="item_name"/>
+            <result property="price" column="price"/>
+            <result property="stockQuantity" column="stock_quantity"/>
+        </collection>
+        <collection property="child" ofType="jpabook.jpashop.domain.Category">
+            <id property="id" column="child_id"/>
+            <result property="name" column="child_name"/>
+        </collection>
+    </resultMap>
+
+    <insert id="save" parameterType="jpabook.jpashop.domain.Category" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO category (name, parent_id)
+        VALUES (#{name}, #{parent.id})
+    </insert>
+
+    <select id="findById" parameterType="Long" resultMap="CategoryResultMap">
+        SELECT c.category_id, c.name,
+               p.category_id as parent_id, p.name as parent_name,
+               i.item_id, i.name as item_name, i.price, i.stock_quantity,
+               ch.category_id as child_id, ch.name as child_name
+        FROM category c
+        LEFT JOIN category p ON c.parent_id = p.category_id
+        LEFT JOIN category_item ci ON c.category_id = ci.category_id
+        LEFT JOIN item i ON ci.item_id = i.item_id
+        LEFT JOIN category ch ON ch.parent_id = c.category_id
+        WHERE c.category_id = #{id}
+    </select>
+
+    <select id="findAll" resultMap="CategoryResultMap">
+        SELECT c.category_id, c.name,
+               p.category_id as parent_id, p.name as parent_name,
+               i.item_id, i.name as item_name, i.price, i.stock_quantity,
+               ch.category_id as child_id, ch.name as child_name
+        FROM category c
+        LEFT JOIN category p ON c.parent_id = p.category_id
+        LEFT JOIN category_item ci ON c.category_id = ci.category_id
+        LEFT JOIN item i ON ci.item_id = i.item_id
+        LEFT JOIN category ch ON ch.parent_id = c.category_id
+    </select>
+
+    <select id="findByParentId" parameterType="Long" resultMap="CategoryResultMap">
+        SELECT c.category_id, c.name,
+               p.category_id as parent_id, p.name as parent_name,
+               i.item_id, i.name as item_name, i.price, i.stock_quantity,
+               ch.category_id as child_id, ch.name as child_name
+        FROM category c
+        LEFT JOIN category p ON c.parent_id = p.category_id
+        LEFT JOIN category_item ci ON c.category_id = ci.category_id
+        LEFT JOIN item i ON ci.item_id = i.item_id
+        LEFT JOIN category ch ON ch.parent_id = c.category_id
+        WHERE c.parent_id = #{parentId}
+    </select>
+
+    <insert id="addItemToCategory">
+        INSERT INTO category_item (category_id, item_id)
+        VALUES (#{param1}, #{param2})
+    </insert>
+
+    <delete id="removeItemFromCategory">
+        DELETE FROM category_item
+        WHERE category_id = #{param1} AND item_id = #{param2}
+    </delete>
+</mapper> 

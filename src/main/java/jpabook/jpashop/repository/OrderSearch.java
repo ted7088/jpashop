@@ -1,21 +1,12 @@
 package jpabook.jpashop.repository;
 
-import jpabook.jpashop.domain.Order;
 import jpabook.jpashop.domain.OrderStatus;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.NoArgsConstructor;
 
-import java.util.List;
-
-@Getter
-@Setter
-@RequiredArgsConstructor
+@Getter @Setter @NoArgsConstructor
 public class OrderSearch {
-
     private String memberName;
     private OrderStatus orderStatus;
-    private OrderRepository orderRepository;
-
-
 }

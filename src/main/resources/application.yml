@@ -1,17 +1,9 @@
 spring:
   datasource:
-    url: jdbc:h2:tcp://localhost/~/jpashop;DB_CLOSE_DELAY=-1;MODE=MySQL
-    driver-class-name: org.h2.Driver
+    url: jdbc:h2:tcp://localhost/~/board
     username: sa
     password:
-
-  h2:
-    console:
-      enabled: true
-
-  thymeleaf:
-    prefix: classpath:/templates/
-    suffix: .html
+    driver-class-name: org.h2.Driver
 
   jpa:
     hibernate:
@@ -19,13 +11,26 @@ spring:
     properties:
       hibernate:
         format_sql: true
-        query:
-          limit:
-            inspection_strategy: legacy
+        show_sql: true
+
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    cache: false
 
 logging:
   level:
     org.hibernate.SQL: debug
+    org.hibernate.type: trace
+
+mybatis:
+  type-aliases-package: jpabook.jpashop.domain
+  mapper-locations: classpath:mapper/**/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+    jdbc-type-for-null: NULL
+    type-handlers-package: jpabook.jpashop.config
+
 server:
   error:
     whitelabel:
