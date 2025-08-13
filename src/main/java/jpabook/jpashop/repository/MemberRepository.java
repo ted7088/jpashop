@@ -2,12 +2,14 @@ package jpabook.jpashop.repository;
 
 import jpabook.jpashop.domain.Member;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
+@Component
 public class MemberRepository {
 
     private final MemberMapper memberMapper;

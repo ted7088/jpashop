@@ -1,6 +1,7 @@
 package jpabook.jpashop.domain.controller;
 
-import jakarta.validation.Valid;
+// 변경 후 (스프링 부트 2.x)
+import javax.validation.Valid;
 import jpabook.jpashop.domain.Address;
 import jpabook.jpashop.domain.Member;
 import jpabook.jpashop.service.MemberService;
