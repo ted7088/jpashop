@@ -12,12 +12,14 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ItemService {
     private final ItemRepository itemRepository;
+    
     @Transactional
     public void saveItem(Item item) {
         itemRepository.save(item);
     }
+    
     public List<Item> findItems() {
-        return itemRepository.findAll();//아이템 찾기
+        return itemRepository.findAll();
     }
 
     public Item findOne(Long itemId) {

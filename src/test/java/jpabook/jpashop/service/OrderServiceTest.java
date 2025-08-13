@@ -6,25 +6,27 @@ import jpabook.jpashop.domain.Order;
 import jpabook.jpashop.domain.OrderStatus;
 import jpabook.jpashop.domain.item.Book;
 import jpabook.jpashop.domain.item.Item;
+import jpabook.jpashop.repository.ItemMapper;
+import jpabook.jpashop.repository.MemberMapper;
 import jpabook.jpashop.repository.OrderRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 @Transactional
 public class OrderServiceTest {
-    @PersistenceContext
-    EntityManager em;
     @Autowired
-    OrderService orderService;
+    private MemberMapper memberMapper;
     @Autowired
-    OrderRepository orderRepository;
+    private ItemMapper itemMapper;
+    @Autowired
+    private OrderService orderService;
+    @Autowired
+    private OrderRepository orderRepository;
 
     @Test
     public void 상품주문() throws Exception {
@@ -57,7 +59,7 @@ public class OrderServiceTest {
         Member member = new Member();
         member.setName("회원1");
         member.setAddress(new Address("서울", "강가", "123-123"));
-        em.persist(member);
+        memberMapper.save(member);
         return member;
     }
 
@@ -66,7 +68,8 @@ public class OrderServiceTest {
         book.setName(name);
         book.setStockQuantity(stockQuantity);
         book.setPrice(price);
-        em.persist(book);
+        book.setDtype("Book");
+        itemMapper.save(book);
         return book;
     }
 }

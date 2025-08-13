@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jpabook.jpashop.repository.DeliveryMapper">
+    
+    <resultMap id="DeliveryResultMap" type="jpabook.jpashop.domain.Delivery">
+        <id property="id" column="delivery_id"/>
+        <result property="status" column="status"/>
+        <association property="address" javaType="jpabook.jpashop.domain.Address">
+            <result property="city" column="city"/>
+            <result property="street" column="street"/>
+            <result property="zipcode" column="zipcode"/>
+        </association>
+        <association property="order" column="order_id" javaType="jpabook.jpashop.domain.Order">
+            <id property="id" column="order_id"/>
+            <result property="orderDate" column="order_date"/>
+            <result property="status" column="order_status"/>
+        </association>
+    </resultMap>
+
+    <insert id="save" parameterType="jpabook.jpashop.domain.Delivery" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO delivery (city, street, zipcode, status)
+        VALUES (#{address.city}, #{address.street}, #{address.zipcode}, #{status})
+    </insert>
+
+    <select id="findById" parameterType="Long" resultMap="DeliveryResultMap">
+        SELECT d.*, o.order_id, o.order_date, o.status as order_status
+        FROM delivery d
+        LEFT JOIN orders o ON o.delivery_id = d.delivery_id
+        WHERE d.delivery_id = #{id}
+    </select>
+
+    <update id="updateStatus">
+        UPDATE delivery
+        SET status = #{status}
+        WHERE delivery_id = #{id}
+    </update>
+</mapper> 
