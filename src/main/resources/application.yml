@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:h2:tcp://localhost/~/jpashop;DB_CLOSE_DELAY=-1;MODE=MySQL
+    url: jdbc:h2:tcp://localhost:9092/~/jpashop;DB_CLOSE_DELAY=-1;MODE=MySQL
     driver-class-name: org.h2.Driver
     username: sa
     password:
@@ -18,14 +18,24 @@ spring:
       ddl-auto: create
     properties:
       hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
         format_sql: true
         query:
           limit:
             inspection_strategy: legacy
 
+mybatis:                       # ← JPA랑 같은 레벨
+  mapper-locations: classpath:mapper/**/*.xml
+  type-aliases-package: jpabook.jpashop.domain
+  configuration:
+    map-underscore-to-camel-case: true
+    jdbc-type-for-null: NULL
+    type-handlers-package: jpabook.jpashop.config
+
 logging:
   level:
     org.hibernate.SQL: debug
+
 server:
   error:
     whitelabel:
