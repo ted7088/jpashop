@@ -15,8 +15,7 @@
             <label th:for="name">이름</label>
             <input type="text" th:field="*{name}" class="form-control"
                    placeholder="이름을 입력하세요"
-                   th:class="${#fields.hasErrors('name')}? 'form-control
-fieldError' : 'form-control'">
+                   th:class="${#fields.hasErrors('name')}? 'form-controlfieldError' : 'form-control'">
             <p th:if="${#fields.hasErrors('name')}"
                th:errors="*{name}">Incorrect date</p>
         </div>
@@ -36,7 +35,14 @@ fieldError' : 'form-control'">
                    placeholder="우편번호를 입력하세요">
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
+        <!-- 뒤로가기 버튼 -->
+        <button type="button" class="btn btn-secondary" onclick="history.back();">목록</button>
     </form>
+
+    <!-- 예외 메시지가 있으면 alert 띄우기 -->
+    <script th:if="${errorMessage != null}">
+        alert('[[${errorMessage}]]');
+    </script>
     <br/>
     <div th:replace="~{fragments/footer :: footer}" />
 </div> <!-- /container -->
