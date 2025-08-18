@@ -15,6 +15,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
+
+//jpa->mybatis 변환후
 @Controller
 @RequiredArgsConstructor
 public class MemberController {
