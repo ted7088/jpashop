@@ -34,7 +34,10 @@ mybatis:                       # ← JPA랑 같은 레벨
 
 logging:
   level:
+    root: info
+    org.springframework: debug
     org.hibernate.SQL: debug
+    org.hibernate.type.descriptor.sql.BasicBinder: trace   # 바인딩 값까지 보고 싶을 때
 
 server:
   error:
