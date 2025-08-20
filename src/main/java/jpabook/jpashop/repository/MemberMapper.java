@@ -13,4 +13,6 @@ public interface MemberMapper {
     Member findById(Long id);
     List<Member> findByName(String name);
     List<Member> findAll();
+
+
 } 

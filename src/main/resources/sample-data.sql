@@ -7,11 +7,11 @@ DELETE FROM delivery;
 DELETE FROM item;
 DELETE FROM member;
 
--- 회원 데이터
-INSERT INTO member (member_id, name, city, street, zipcode) VALUES 
-(1, 'user1', 'Seoul', 'Gangnam', '12345'),
-(2, 'user2', 'Busan', 'Haeundae', '23456'),
-(3, 'user3', 'Incheon', 'Yeonsu', '34567');
+-- 회원 데이터 (비밀번호는 BCrypt로 암호화된 'password'입니다)
+INSERT INTO member (member_id, name, password, city, street, zipcode) VALUES 
+(1, 'user1', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iKTVEFDa', 'Seoul', 'Gangnam', '12345'),
+(2, 'user2', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iKTVEFDa', 'Busan', 'Haeundae', '23456'),
+(3, 'user3', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iKTVEFDa', 'Incheon', 'Yeonsu', '34567');
 
 -- 상품 데이터
 -- Book

@@ -10,7 +10,8 @@ import java.util.List;
 @Getter @Setter @NoArgsConstructor
 public class Member {
     private Long id;
-    private String name;
+    private String name;       // 로그인 아이디로 사용
+    private String password;
     private Address address;
     private List<Order> orders = new ArrayList<>();
 }

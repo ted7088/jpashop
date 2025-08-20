@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="jpabook.jpashop.repository.MemberMapper">
-    
+
     <resultMap id="MemberResultMap" type="jpabook.jpashop.domain.Member">
         <id property="id" column="member_id"/>
         <result property="name" column="name"/>
+        <result property="password" column="password"/> <!-- 로그인 기능용 -->
         <association property="address" javaType="jpabook.jpashop.domain.Address">
             <result property="city" column="city"/>
             <result property="street" column="street"/>
@@ -13,9 +14,10 @@
     </resultMap>
 
     <insert id="save" parameterType="jpabook.jpashop.domain.Member" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO member (name, city, street, zipcode)
-        VALUES (#{name}, #{address.city}, #{address.street}, #{address.zipcode})
+        INSERT INTO member (name, password, city, street, zipcode)
+        VALUES (#{name}, #{password}, #{address.city}, #{address.street}, #{address.zipcode})
     </insert>
+
 
     <select id="findById" parameterType="Long" resultMap="MemberResultMap">
         SELECT *
@@ -33,4 +35,6 @@
         SELECT *
         FROM member
     </select>
+
+
 </mapper> 

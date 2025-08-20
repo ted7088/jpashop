@@ -43,16 +43,19 @@ public class MemberController {
             Member member = new Member();
             member.setName(form.getName());
             member.setAddress(address);
+            member.setPassword(form.getPassword()); // 비밀번호 세팅
+            System.out.println("폼 비밀번호: " + form.getPassword());
 
-            memberService.join(member);
+            memberService.join(member); // 서비스에서 암호화 후 저장
 
         } catch (IllegalStateException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-            return "redirect:/members/new"; // GET 요청으로 페이지 이동
+            return "redirect:/members/new";
         }
 
         return "redirect:/";
     }
+
     @GetMapping(value = "/members")
     public String list(Model model) {
         List<Member> members = memberService.findMembers();

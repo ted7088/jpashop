@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Service
 @Transactional(readOnly = true)
@@ -14,13 +15,20 @@ import java.util.List;
 public class MemberService {
 
     private final MemberMapper memberMapper;
+    private final PasswordEncoder passwordEncoder; // DI 추가
 
-    /**
-     * 회원 가입
-     */
     @Transactional
     public Long join(Member member) {
         validateDuplicateMember(member);
+
+        // 비밀번호 암호화 추가
+        String rawPassword = member.getPassword();
+        String encodedPassword = passwordEncoder.encode(rawPassword);
+        member.setPassword(encodedPassword);
+
+
+        System.out.println("암호화 후 패스워드: " + member.getPassword());
+
         memberMapper.save(member);
         return member.getId();
     }
@@ -32,9 +40,6 @@ public class MemberService {
         }
     }
 
-    /**
-     * 전체 회원 조회
-     */
     public List<Member> findMembers() {
         return memberMapper.findAll();
     }
@@ -42,4 +47,5 @@ public class MemberService {
     public Member findOne(Long memberId) {
         return memberMapper.findById(memberId);
     }
+
 }
