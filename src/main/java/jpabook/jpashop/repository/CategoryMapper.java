@@ -9,6 +9,8 @@ import java.util.List;
 @Mapper
 @Component
 public interface CategoryMapper {
+
+    //저장
     void save(Category category);
     Category findById(Long id);
     List<Category> findAll();
