@@ -13,6 +13,8 @@ public interface CategoryMapper {
     //저장
     void save(Category category);
     Category findById(Long id);
+
+    //찾기
     List<Category> findAll();
     List<Category> findByParentId(Long parentId);
     void addItemToCategory(Long categoryId, Long itemId);
