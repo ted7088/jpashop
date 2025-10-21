@@ -16,6 +16,7 @@ public interface CategoryMapper {
 
     //찾기
     List<Category> findAll();
+    //부모 아이디 찾기
     List<Category> findByParentId(Long parentId);
     void addItemToCategory(Long categoryId, Long itemId);
     void removeItemFromCategory(Long categoryId, Long itemId);
