@@ -75,7 +75,7 @@ public class OrderService {
         order.setStatus(OrderStatus.CANCEL);
         orderRepository.updateStatus(orderId, OrderStatus.CANCEL);
         
-        //재고 수량 원복
+        //재고 수량 원복 for문
         for (OrderItem orderItem : order.getOrderItems()) {
             int currentStock = itemMapper.getStockQuantity(orderItem.getItem().getId());
             itemMapper.updateStockQuantity(orderItem.getItem().getId(), currentStock + orderItem.getCount());
