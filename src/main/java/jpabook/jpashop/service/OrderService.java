@@ -55,7 +55,7 @@ public class OrderService {
         Order order = Order.createOrder(member, delivery, orderItem);
         orderRepository.save(order);
 
-        // OrderItem 저장
+        // OrderItem 에 저장
         orderItem.setOrder(order);
         orderItemMapper.save(orderItem);
 
