@@ -15,6 +15,7 @@ import java.util.List;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Slf4j
+//주문 생성
 public class OrderService {
 
     private final OrderRepository orderRepository;
