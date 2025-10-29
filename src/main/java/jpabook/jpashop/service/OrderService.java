@@ -25,7 +25,7 @@ public class OrderService {
     private final OrderItemMapper orderItemMapper;
     private final DeliveryMapper deliveryMapper;
 
-    //주문
+    //주문 오더
     @Transactional
     public Long order(Long memberId, Long itemId, int count) {
         //엔티티 조회
