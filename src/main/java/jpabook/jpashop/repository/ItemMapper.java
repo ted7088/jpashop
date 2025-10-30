@@ -8,6 +8,8 @@ import java.util.List;
 
 @Mapper
 @Component
+
+//item 메퍼 생성
 public interface ItemMapper {
     void save(Item item);
     Item findById(Long id);
